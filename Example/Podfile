@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'TRSheetManager_Example' do
+  pod 'TRSheetManager', :path => '../'
+
+  target 'TRSheetManager_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
