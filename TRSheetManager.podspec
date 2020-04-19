@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'TRSheetManager'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of TRSheetManager.'
+  s.summary          = 'Framework for generating spreadsheets'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -24,9 +24,9 @@ TODO: Add long description of the pod here.
   s.homepage         = 'https://github.com/truongvinht/TRSheetManager'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'truongvinht' => 'truongvinht@gmail.com' }
+  s.author           = { 'Truong Vinh Tran' => 'truongvinht@gmail.com' }
   s.source           = { :git => 'https://github.com/truongvinht/TRSheetManager.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.social_media_url = 'https://twitter.com/truongvinht'
 
   s.ios.deployment_target = '8.0'
 

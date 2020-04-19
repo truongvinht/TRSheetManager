@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  TRSheetManager
 //
-//  Created by truongvinht on 04/19/2020.
-//  Copyright (c) 2020 truongvinht. All rights reserved.
+//  Created by Truong Vinh Tran on 04/19/2020.
+//  Copyright (c) 2020 Truong Vinh Tran. All rights reserved.
 //
 
 import UIKit

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E751334244CC90500ECB04C /* TRSheetManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E751333244CC90500ECB04C /* TRSheetManager.framework */; };
+		1E751335244CC90500ECB04C /* TRSheetManager.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1E751333244CC90500ECB04C /* TRSheetManager.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5A9A375DB5D2C1BA51F6E5EA /* Pods_TRSheetManager_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60583455515E6D04E353F8B2 /* Pods_TRSheetManager_Example.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -27,10 +29,25 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1E751336244CC90500ECB04C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1E751335244CC90500ECB04C /* TRSheetManager.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		00FF031F9EF93B5CF738F4CD /* Pods-TRSheetManager_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRSheetManager_Tests.release.xcconfig"; path = "Target Support Files/Pods-TRSheetManager_Tests/Pods-TRSheetManager_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		07217D15530887A732710EAF /* Pods-TRSheetManager_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRSheetManager_Tests.debug.xcconfig"; path = "Target Support Files/Pods-TRSheetManager_Tests/Pods-TRSheetManager_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		0F549C912443809F477F61ED /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		0F549C912443809F477F61ED /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		1E751333244CC90500ECB04C /* TRSheetManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TRSheetManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		30E8A5333C0089C198E005A7 /* Pods-TRSheetManager_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRSheetManager_Example.release.xcconfig"; path = "Target Support Files/Pods-TRSheetManager_Example/Pods-TRSheetManager_Example.release.xcconfig"; sourceTree = "<group>"; };
 		60583455515E6D04E353F8B2 /* Pods_TRSheetManager_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TRSheetManager_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD01AFB9204008FA782 /* TRSheetManager_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TRSheetManager_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,8 +60,8 @@
 		607FACE51AFB9204008FA782 /* TRSheetManager_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TRSheetManager_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		633DC189CDB97A390D291334 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		AACD45C16C8DDC24FE5D8247 /* TRSheetManager.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = TRSheetManager.podspec; path = ../TRSheetManager.podspec; sourceTree = "<group>"; };
+		633DC189CDB97A390D291334 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		AACD45C16C8DDC24FE5D8247 /* TRSheetManager.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = TRSheetManager.podspec; path = ../TRSheetManager.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		B6916D130CE080D17B046DD6 /* Pods-TRSheetManager_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TRSheetManager_Example.debug.xcconfig"; path = "Target Support Files/Pods-TRSheetManager_Example/Pods-TRSheetManager_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		D6ECBBAB230D03BF9E1B4414 /* Pods_TRSheetManager_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TRSheetManager_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -54,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E751334244CC90500ECB04C /* TRSheetManager.framework in Frameworks */,
 				5A9A375DB5D2C1BA51F6E5EA /* Pods_TRSheetManager_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -72,6 +90,7 @@
 		3BBC40C478E35E8DCA037AF1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1E751333244CC90500ECB04C /* TRSheetManager.framework */,
 				60583455515E6D04E353F8B2 /* Pods_TRSheetManager_Example.framework */,
 				D6ECBBAB230D03BF9E1B4414 /* Pods_TRSheetManager_Tests.framework */,
 			);
@@ -156,7 +175,6 @@
 				07217D15530887A732710EAF /* Pods-TRSheetManager_Tests.debug.xcconfig */,
 				00FF031F9EF93B5CF738F4CD /* Pods-TRSheetManager_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -172,6 +190,7 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				F67A9AFA47F28364140E4191 /* [CP] Embed Pods Frameworks */,
+				1E751336244CC90500ECB04C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -227,6 +246,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);

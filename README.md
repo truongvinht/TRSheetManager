@@ -22,7 +22,7 @@ pod 'TRSheetManager'
 
 ## Author
 
-truongvinht, truongvinht@gmail.com
+Truong Vinh Tran, truongvinht@gmail.com
 
 ## License
 
