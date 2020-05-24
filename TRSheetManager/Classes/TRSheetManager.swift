@@ -441,7 +441,8 @@ public class TRSheetManager {
             return self.parseStyle(styleInfo: dictionary, forId: styleID, forName: name)
         }
         
-        let styleString = "\t<Style ss:ID=\"\(styleID)\"\(name)>\n"
+        // TODO: need to clean up
+        //let styleString = "\t<Style ss:ID=\"\(styleID)\"\(name)>\n"
         
         var sizeAttribute = ""
         
@@ -467,7 +468,11 @@ public class TRSheetManager {
         }
         
         // set default font name
-        var fontName = info[TR_FONTNAME_KEY]
+        let fontName = info[TR_FONTNAME_KEY]
+        
+        if let name = fontName as? String {
+            print("\(sizeAttribute) \(name)")
+        }
         
         // TODO: Incomplete implementation
         
