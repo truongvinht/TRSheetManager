@@ -1,9 +1,9 @@
 # TRSheetManager
 
 [![CI Status](https://img.shields.io/travis/truongvinht/TRSheetManager.svg?style=flat)](https://travis-ci.org/truongvinht/TRSheetManager)
-[![Version](https://img.shields.io/cocoapods/v/TRSheetManager.svg?style=flat)](https://cocoapods.org/pods/TRSheetManager)
-[![License](https://img.shields.io/cocoapods/l/TRSheetManager.svg?style=flat)](https://cocoapods.org/pods/TRSheetManager)
-[![Platform](https://img.shields.io/cocoapods/p/TRSheetManager.svg?style=flat)](https://cocoapods.org/pods/TRSheetManager)
+[![Version](https://badge.fury.io/gh/tterb%2FHyde.svg)](https://github.com/truongvinht/TRSheetManager)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<!-- [![Platform](https://img.shields.io/cocoapods/p/TRSheetManager.svg?style=flat)](https://cocoapods.org/pods/TRSheetManager) -->
 
 ## Example
 
