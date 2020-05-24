@@ -25,8 +25,15 @@ THE SOFTWARE.
 
 import Foundation
 
+public enum TRValueType: String {
+    case numeric = "Number"
+    case string = "String"
+    case date = "DateTime"
+    case undefined = "undef"
+}
+
 /** Sheet object for carrying value.*/
-class TRValue {
+public class TRValue {
     
     /// numeric value
     private var numericValue: NSNumber?
@@ -34,12 +41,15 @@ class TRValue {
     /// string value
     private var stringValue: String?
     
+    /// date value
+    private var dateValue: Date?
+    
     /**
      Constructor for numeric value
      - Parameters:
         - withNumber: numeric value
      */
-    init(withNumber number: NSNumber) {
+    public init(withNumber number: NSNumber) {
         self.numericValue = number
     }
     
@@ -48,23 +58,72 @@ class TRValue {
      - Parameters:
         - withString: string value
      */
-    init(withString string: String) {
+    public init(withString string: String) {
         self.stringValue = string
     }
+    
+    
+    /**
+     Constructor for date value
+     - Parameters:
+        - withDate: date value
+     */
+     public init(withDate date: Date) {
+         self.dateValue = date
+     }
+    
     
     /**
      Get stored value
      - returns: stored value (Number or String), if no data is stored, an empty string is returned
      */
-    func getValue() -> Any {
-        if let number = self.numericValue {
-            return number
-        } else {
+    public func value() -> Any {
+        if isValid() {
+            
+            if let number = self.numericValue {
+                return number
+            }
+            
             if let string = self.stringValue {
                 return string
             }
+            
+            if let date = self.dateValue {
+                return date
+            }
         }
+        
         // empty string as fallback
         return ""
+    }
+    
+    public func isValid() -> Bool {
+        
+        if contentType() == .undefined {
+            return false
+        } else {
+            return true;
+        }
+    }
+    
+    
+    /**
+     Get details whether stored value is numeric or string
+     - returns: true, if value is numeric
+     */
+    public func contentType() -> TRValueType {
+        if let _ = self.numericValue {
+            return .numeric
+        }
+        
+        if let _ = self.stringValue {
+            return .string
+        }
+        
+        if let _ = self.dateValue {
+            return .date
+        }
+        
+        return .undefined
     }
 }
