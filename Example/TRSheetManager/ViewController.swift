@@ -14,18 +14,15 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        print("Hello World")
-        //let sheetManager =
         
         let sheetManager = TRSheetManager(withAuthor: "Truong Vinh Tran")
         if let firstPage = sheetManager.addSheet(sheetName: "1st page") {
             firstPage.addRow(entries: [TRValue(withString: "Name"),TRValue(withString: "Hans")])
             firstPage.addRow(entries: [TRValue(withString: "Score"),TRValue(withNumber: NSNumber(value: 1000))])
         }
-        sheetManager.writeSheetToFile(fileName: "Example.xls")
-        
-        
-        
+        if sheetManager.writeSheetToFile(fileName: "Example.xls") {
+            print("file saved")
+        }
     }
 
     override func didReceiveMemoryWarning() {
