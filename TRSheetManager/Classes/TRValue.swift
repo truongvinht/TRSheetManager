@@ -102,7 +102,7 @@ public class TRValue {
         if contentType() == .undefined {
             return false
         } else {
-            return true;
+            return true
         }
     }
     
@@ -112,15 +112,15 @@ public class TRValue {
      - returns: true, if value is numeric
      */
     public func contentType() -> TRValueType {
-        if let _ = self.numericValue {
+        if self.numericValue != nil {
             return .numeric
         }
         
-        if let _ = self.stringValue {
+        if self.stringValue != nil {
             return .string
         }
         
-        if let _ = self.dateValue {
+        if self.dateValue != nil {
             return .date
         }
         

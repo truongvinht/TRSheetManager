@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Constants for style the cell
 
 /// key for mapping configurations
-struct TRKey {
+public struct TRKey {
     
     /// key for font size
     static let size = "size"
@@ -51,7 +51,7 @@ struct TRKey {
 }
 
 /// horizontal key aligment
-struct TRHorizontal {
+public struct TRHorizontal {
     
     /// automatic alignment
     let automatic = "Automatic"
@@ -67,7 +67,7 @@ struct TRHorizontal {
 }
 
 /// vertical key aligment
-struct TRVertical {
+public struct TRVertical {
     
     /// automatic alignment
     let automatic = "Automatic"
@@ -83,7 +83,7 @@ struct TRVertical {
 }
 
 /// cell border line
-struct TRBorder {
+public struct TRBorder {
     
     /// top border
     static let top = "borderTop"
@@ -102,7 +102,7 @@ struct TRBorder {
 }
 
 /// worksheet constants
-struct TRWorkSheet {
+public struct TRWorkSheet {
     
     ///zoom level for the work sheet window
     static let zoom = "zoom"
