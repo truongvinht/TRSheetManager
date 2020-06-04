@@ -25,65 +25,6 @@ THE SOFTWARE.
 
 import Foundation
 
-// MARK: - Constants for style the cell
-
-///font size key
-let TR_SIZE_KEY = "size"
-
-///font name key
-let TR_FONTNAME_KEY = "fontName"
-
-///font color
-let TR_COLOR_KEY = "color"
-
-///font is bold
-let TR_BOLD_KEY = "bold"
-
-///font is italic
-let TR_ITALIC_KEY = "italic"
-
-///font is underlined
-let TR_UNDERLINE_KEY = "underline"
-
-///cell background color in HEX (e.g #000000 = black)
-let TR_BGCOLOR_KEY = "backgroundColor"
-
-/// horizontal key
-let TR_HORIZONTAL_KEY = "horizontalAlignment"
-let TR_HORIZONTAL_AUTOMATIC = "Automatic"
-let TR_HORIZONTAL_LEFT = "Left"
-let TR_HORIZONTAL_CENTER = "Center"
-let TR_HORIZONTAL_RIGHT = "Right"
-
-///vertical key
-let TR_VERTICAL_KEY = "verticalAlignment"
-let TR_VERTICAL_AUTOMATIC = "Automatic"
-let TR_VERTICAL_TOP = "Top"
-let TR_VERTICAL_CENTER = "Center"
-let TR_VERTICAL_BOTTOM = "Bottom"
-
-///wrap the text within cell
-let TR_WRAPTEXT_KEY = "wrapText"
-
-///border attributes
-let TR_BORDER_TOP_KEY = "borderTop"
-let TR_BORDER_BOTTOM_KEY = "borderBottom"
-let TR_BORDER_RIGHT_KEY = "borderRight"
-let TR_BORDER_LEFT_KEY = "borderLeft"
-let TR_BORDER_ALL_KEY = "borderAll"
-
-///fixed number to x,xx
-let TR_NUMBER_FIXED = "fixedNumber"
-
-///add custom format
-let TR_CUSTOM_KEY = "custom"
-
-///zoom level for the work sheet window
-let TR_WSO_ZOOM_KEY = "zoom"
-
-///custom work sheet setting
-let TR_WSO_CUSTOM_KEY = "custom"
-
 // MARK: - TRSheetManager
 
 /** Class for creating Spreadsheets (using XML structure)*/
@@ -126,7 +67,7 @@ public class TRSheetManager {
         let styleString = self.parseStyle(styleInfo: defaultStyle, forId: "Default", forName: "ss:Name\"Normal\"")
         
         // remove all defaults
-        if styleString.count == 0 {
+        if styleString.isEmpty {
             self.defaultStyle = nil
             return
         }
@@ -143,16 +84,16 @@ public class TRSheetManager {
         self.workSheetOptions = options
     }
     
-    func parseWorkSheetOptions(options:[String:Any]) -> String {
+    func parseWorkSheetOptions(options: [String: Any]) -> String {
         
         var sheetOptionString = "<WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\"><FitToPage />"
         
-        if let value = options[TR_WSO_ZOOM_KEY] {
+        if let value = options[TRWorkSheet.zoom] {
             sheetOptionString = "\(sheetOptionString)<Zoom>\(value)</Zoom>"
         }
         
         // optional stuff
-        if let value = options[TR_WSO_CUSTOM_KEY] {
+        if let value = options[TRWorkSheet.custom] {
             sheetOptionString = "\(sheetOptionString)\(value)"
         }
         
@@ -168,11 +109,8 @@ public class TRSheetManager {
     public func addSheet(sheetName: String) -> TRSheetObject? {
 
         //check wether sheet name already exist
-        for sheet in self.sheetArray {
-            if sheet.sheetname == sheetName {
-                return nil
-            }
-            
+        for sheet in self.sheetArray where sheet.sheetname == sheetName {
+            return nil
         }
         
         // create new sheet
@@ -182,12 +120,47 @@ public class TRSheetManager {
     }
     
     /**
+        Method to remove an existing sheet page
+        - Parameters:
+            - sheet: name of the deleting sheet
+     */
+    public func removeSheet(sheet: TRSheetObject) {
+        
+        guard let index = self.sheetArray.firstIndex(where: { $0.sheetname == sheet.sheetname })
+                else { return }
+
+        self.sheetArray.remove(at: index)
+    }
+    
+    /**
+     Method to remove all sheet pages
+     */
+    public func removeAllSheets() {
+        
+        if !self.sheetArray.isEmpty {
+            for index in 0...self.sheetArray.count - 1 {
+                self.sheetArray.remove(at: index)
+            }
+        }
+        
+    }
+    
+    /**
      Method to read all sheets already in the array
         - Parameters:
             - returns: available sheets
     */
     public func getAllSheets() -> [TRSheetObject] {
         return self.sheetArray
+    }
+    
+    /**
+      Method to get number of current sheets within document
+        - Parameters:
+            - returns: number of available sheets
+     */
+    public func numberOfSheets() -> Int {
+        return self.sheetArray.count
     }
     
     /**
@@ -207,33 +180,8 @@ public class TRSheetManager {
         // set created date
         dataStream = "\(dataStream)\t<Created>\(Date())</Created>\n</DocumentProperties>\n"
         
-        //add styles for date (week day)
-        dataStream.append("\n<Styles>\n")
-        
-        //add default styles if available
-        if let style = self.defaultStyle {
-            dataStream.append(style)
-        }
-        
-        for sheet in self.sheetArray {
-            for y in 0...sheet.formatArray.count-1 {
-                
-                let list = sheet.formatArray[y]
-                
-                if list.count > 0 {
-                    for z in 0...list.count {
-                        
-                        if let dictionary = list[z] as? [String: Any] {
-                            if let style = self.getStyleForDict(style: dictionary) {
-                                dataStream.append(style)
-                            }
-                        }
-                    }
-                }
-                
-            }
-        }
-        dataStream.append("</Styles>\n\n")
+        // add styles formatting rules
+        dataStream.append(loadCustomStyles(sheets: self.sheetArray))
 
         //write every sheet page
         for sheet in self.sheetArray {
@@ -243,7 +191,6 @@ public class TRSheetManager {
             //start the table
             dataStream.append("<Table>\n")
             
-
             //add column size if available
             if let sizeList = sheet.columnSizeList {
                 for size in sizeList {
@@ -252,84 +199,84 @@ public class TRSheetManager {
             }
             
             // append every row
-            for j in 0...sheet.array.count-1 {
-            //for rowEntry in sheet.array {
-                let rowEntry = sheet.array[j]
-                dataStream.append("\t<Row>\n")
-                
-                //every cell
-                for k in 0...rowEntry.count-1 {
-                //for cellEntry in rowEntry {
-                   
-                    let cellEntry = rowEntry[k]
-                    var type = cellEntry.contentType()
-                    var contentData: Any = ""
-                    var cellConfiguration = ""
+            if !sheet.array.isEmpty {
+                for rowIndex in 0...sheet.array.count - 1 {
+                    //for rowEntry in sheet.array {
+                    let rowEntry = sheet.array[rowIndex]
+                    dataStream.append("\t<Row>\n")
                     
-                    //add cell configuration if available
-                    if sheet.array.count == sheet.configArray.count {
+                    //every cell
+                    for cellIndex in 0...rowEntry.count - 1 {
+                        //for cellEntry in rowEntry {
                         
-                        if let index = sheet.array.firstIndex(where: {$0 as AnyObject === rowEntry as AnyObject}) {
-//                            if index < sheet.configArray.count {
-//
-//                            }
-                            cellConfiguration = sheet.configArray[index]
+                        let cellEntry = rowEntry[cellIndex]
+                        var type = cellEntry.contentType()
+                        var contentData: Any = ""
+                        var cellConfiguration = ""
+                        
+                        //add cell configuration, if available
+                        if sheet.array.count == sheet.configArray.count {
+                            
+                            if let index = sheet.array.firstIndex(where: { $0 as AnyObject === rowEntry as AnyObject }) {
+                                cellConfiguration = sheet.configArray[index]
+                            }
                         }
-                    }
-                    
-                    // check content type
-                    switch type {
-                    case .string:
-                        if let strinValue = cellEntry.value() as? String {
-                            contentData = strinValue
+                        
+                        // check content type
+                        switch type {
+                        case .string:
+                            if let strinValue = cellEntry.value() as? String {
+                                contentData = strinValue
+                            }
+                        case .numeric:
+                            if let numericValue = cellEntry.value() as? NSNumber {
+                                //only allow if there is now cellconfigurations (macros)
+                                if !cellConfiguration.isEmpty {
+                                    contentData = String(format: "%@", [numericValue] )
+                                } else {
+                                    contentData = numericValue
+                                }
+                            }
+                        case .date:
+                            if let dateValue = cellEntry.value() as? Date {
+                                //only allow if there is now cellconfigurations (macros)
+                                if !cellConfiguration.isEmpty {
+                                    contentData = String(format: "%@", [dateValue] )
+                                }
+                            }
+                        default:
+                            //unknown type will treat as string
+                            type = .string
                         }
-                    case .numeric:
-                        if let numericValue = cellEntry.value() as? NSNumber {
-                            //only allow if there is now cellconfigurations (macros)
-                            if cellConfiguration.count > 0  {
-                                contentData = String(format: "%@", [numericValue] )
+                        
+                        // format cell
+                        if let style = sheet.styleForRow(rowIndex: rowIndex, columnIndex: cellIndex) {
+                            cellConfiguration = String(format: "%@ss:StyleID=\"%@\"", cellConfiguration, style)
+                        }
+                        
+                        var isValidString = false
+                        
+                        if let content = contentData as? String {
+                            if content.isEmpty {
+                                isValidString = true
+                            }
+                        }
+                        
+                        if type == .string && !isValidString {
+                            dataStream.append("\t\t<Cell />\n")
+                        } else {
+                            if let varArg = contentData as? CVarArg {
+                                let completeCellString = String(format: "\t\t<Cell%@><Data ss:Type=\"%@\">%@</Data></Cell>\n", cellConfiguration, type.rawValue, varArg)
+                                dataStream.append(completeCellString)
                             } else {
-                                contentData = numericValue
+                                // default closing
+                                dataStream.append("\t\t<Cell />\n")
                             }
                         }
-                    case .date:
-                        if let dateValue = cellEntry.value() as? Date {
-                            //only allow if there is now cellconfigurations (macros)
-                            if cellConfiguration.count > 0 {
-                                contentData = String(format: "%@", [dateValue] )
-                            }
-                        }
-                    default:
-                        //unknown type will treat as string
-                        type = .string
                     }
-                    
-                    // format cell
-                    if let style = sheet.styleForRow(rowIndex: j, columnIndex: k) {
-                        cellConfiguration = String(format: "%@ss:StyleID=\"%@\"", cellConfiguration,style)
-                    }
-                    
-                    var isValidString = false
-                    
-                    if let content = contentData as? String {
-                        if content.count > 0 {
-                            isValidString = true
-                        }
-                    }
-                    
-                    
-                    if type == .string && !isValidString {
-                        dataStream.append("\t\t<Cell />\n")
-                    } else {
-                        let completeCellString = String(format: "\t\t<Cell%@><Data ss:Type=\"%@\">%@</Data></Cell>\n", cellConfiguration, type.rawValue, contentData as! CVarArg)
-                        dataStream.append(completeCellString)
-                    }
+                    dataStream.append("\t</Row>\n")
                 }
-                
-                dataStream.append("\t</Row>\n")
             }
-            
-            //TODO: Incomplete
 
             //end table
             dataStream.append("</Table>\n")
@@ -343,11 +290,49 @@ public class TRSheetManager {
         }
         // end tag
         dataStream.append("</Workbook>")
-        return dataStream.data(using: .utf8);
+        return dataStream.data(using: .utf8)
     }
     
-    private func getStyleForDict(style:[String:Any]) -> String? {
+    private func getStyleForDict(style: [String: Any]) -> String? {
         return nil
+    }
+    
+    private func loadCustomStyles(sheets: [TRSheetObject]) -> String {
+        var dataStream = ""
+        
+        //add styles for date (week day)
+        dataStream.append("\n<Styles>\n")
+        
+        //add default styles if available
+        if let style = self.defaultStyle {
+            dataStream.append(style)
+        }
+        
+        for sheet in sheets {
+            
+            // skip empty
+            if sheet.formatArray.isEmpty {
+                continue
+            }
+            
+            for formatRow in 0...sheet.formatArray.count - 1 {
+                
+                let list = sheet.formatArray[formatRow]
+                
+                if list.isEmpty {
+                    for formatCell in 0...list.count - 1 {
+                        
+                        if let dictionary = list[formatCell] as? [String: Any] {
+                            if let style = self.getStyleForDict(style: dictionary) {
+                                dataStream.append(style)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        dataStream.append("</Styles>\n\n")
+        return dataStream
     }
     
     // MARK: - File access Methods
@@ -367,7 +352,7 @@ public class TRSheetManager {
             do {
                  try sheet.write(to: URL(fileURLWithPath: defaultPath).appendingPathComponent(fileName), options: .atomicWrite)
                 return true
-            } catch  {
+            } catch {
                 print("TRSheetManager#\(#function): Error saving file [\(defaultPath)]")
             }
         }
@@ -389,7 +374,7 @@ public class TRSheetManager {
             do {
                  try sheet.write(to: URL(fileURLWithPath: path).appendingPathComponent(fileName), options: .atomicWrite)
                 return true
-            } catch  {
+            } catch {
                 print("TRSheetManager#\(#function): Error saving file [\(path)]")
             }
         }
@@ -418,7 +403,7 @@ public class TRSheetManager {
             - returns: style string
      
     */
-    private func parseStyle(styleInfo:[String: Any]?, forId styleID:String, forName name: String) -> String {
+    private func parseStyle(styleInfo: [String: Any]?, forId styleID: String, forName name: String) -> String {
 
         //invalid format will be ignored
         guard let info = styleInfo else {
@@ -426,18 +411,18 @@ public class TRSheetManager {
         }
         
         // no keys
-        if info.count == 0 {
+        if info.isEmpty {
             return ""
         }
         
         //replace the all with other keys
-        if let _ = info[TR_BORDER_ALL_KEY] {
-            var dictionary = info;
-            dictionary[TR_BORDER_BOTTOM_KEY] = info[TR_BORDER_ALL_KEY]
-            dictionary[TR_BORDER_TOP_KEY] = info[TR_BORDER_ALL_KEY]
-            dictionary[TR_BORDER_RIGHT_KEY] = info[TR_BORDER_ALL_KEY]
-            dictionary[TR_BORDER_LEFT_KEY] = info[TR_BORDER_ALL_KEY]
-            dictionary.removeValue(forKey: TR_BORDER_ALL_KEY)
+        if info[TRBorder.all] != nil {
+            var dictionary = info
+            dictionary[TRBorder.bottom] = info[TRBorder.all]
+            dictionary[TRBorder.top] = info[TRBorder.all]
+            dictionary[TRBorder.right] = info[TRBorder.all]
+            dictionary[TRBorder.left] = info[TRBorder.all]
+            dictionary.removeValue(forKey: TRBorder.all)
             return self.parseStyle(styleInfo: dictionary, forId: styleID, forName: name)
         }
         
@@ -447,12 +432,12 @@ public class TRSheetManager {
         var sizeAttribute = ""
         
         //set the default font size
-        if let size = info[TR_SIZE_KEY] as? NSNumber  {
+        if let size = info[TRKey.size] as? NSNumber {
             sizeAttribute = " ss:Size=\"\(size)\""
         } else {
             //try to use default style, if available
-            if let style = self.defaultStyle  {
-                if name.count == 0 {
+            if let style = self.defaultStyle {
+                if name.isEmpty {
                     let splitDefaultStyle = style.components(separatedBy: " ")
                     
                     for part in splitDefaultStyle {
@@ -468,7 +453,7 @@ public class TRSheetManager {
         }
         
         // set default font name
-        let fontName = info[TR_FONTNAME_KEY]
+        let fontName = info[TRKey.fontName]
         
         if let name = fontName as? String {
             print("\(sizeAttribute) \(name)")
@@ -478,5 +463,4 @@ public class TRSheetManager {
         
         return ""
     }
-    
 }

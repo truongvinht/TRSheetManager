@@ -147,13 +147,13 @@ public class TRSheetObject {
         self.array.append(entries)
         
         if let formattingList = formatting {
-            if formattingList.count > 0 {
+            if formattingList.isEmpty {
                 
                 // copy all formatting and check valid number of entries (match entries)
                 var format: [Any] = []
                 
-                for f in formattingList {
-                    format.append(f)
+                for customFormat in formattingList {
+                    format.append(customFormat)
                 }
                 
                 // fill up with last formatting
