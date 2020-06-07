@@ -223,31 +223,9 @@ public class TRSheetManager {
                         }
                         
                         // check content type
-                        switch type {
-                        case .string:
-                            if let strinValue = cellEntry.value() as? String {
-                                contentData = strinValue
-                            }
-                        case .numeric:
-                            if let numericValue = cellEntry.value() as? NSNumber {
-                                //only allow if there is now cellconfigurations (macros)
-                                if !cellConfiguration.isEmpty {
-                                    contentData = String(format: "%@", [numericValue] )
-                                } else {
-                                    contentData = numericValue
-                                }
-                            }
-                        case .date:
-                            if let dateValue = cellEntry.value() as? Date {
-                                //only allow if there is now cellconfigurations (macros)
-                                if !cellConfiguration.isEmpty {
-                                    contentData = String(format: "%@", [dateValue] )
-                                }
-                            }
-                        default:
-                            //unknown type will treat as string
-                            type = .string
-                        }
+                        let cellData = cellEntry.formatedData(cellConfiguration: cellConfiguration)
+                        contentData = cellData.contentData
+                        type = cellData.outputType
                         
                         // format cell
                         if let style = sheet.styleForRow(rowIndex: rowIndex, columnIndex: cellIndex) {

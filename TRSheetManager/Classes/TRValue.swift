@@ -126,4 +126,46 @@ public class TRValue {
         
         return .undefined
     }
+    
+    /**
+     Method to get formated data
+            - Parameters:
+                - cellConfigurations: custom cell configuration as string
+            - returns:
+                    - contentData: result data
+                    - outputType: content type
+     */
+    public func formatedData(cellConfiguration: String) -> (contentData: Any, outputType: TRValueType) {
+        var type = self.contentType()
+        var contentData: Any = ""
+        
+        // check content type
+        switch type {
+        case .string:
+            if let strinValue = self.value() as? String {
+                contentData = strinValue
+            }
+        case .numeric:
+            if let numericValue = self.value() as? NSNumber {
+                //only allow if there is now cellconfigurations (macros)
+                if !cellConfiguration.isEmpty {
+                    contentData = String(format: "%@", [numericValue] )
+                } else {
+                    contentData = numericValue
+                }
+            }
+        case .date:
+            if let dateValue = self.value() as? Date {
+                //only allow if there is now cellconfigurations (macros)
+                if !cellConfiguration.isEmpty {
+                    contentData = String(format: "%@", [dateValue] )
+                }
+            }
+        default:
+            //unknown type will treat as string
+            type = .string
+        }
+        
+        return (contentData, type)
+    }
 }

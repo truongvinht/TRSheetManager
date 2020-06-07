@@ -120,11 +120,11 @@ public class TRSheetObject {
     private func getStyleId(mapValue: Any) -> String? {
 
         //invalid format will be ignored
-        if let _ = mapValue as? String {
+        if mapValue as? String != nil {
             return ""
         }
         
-        if let _ = mapValue as? NSNull {
+        if mapValue as? NSNull != nil {
             return ""
         }
         
