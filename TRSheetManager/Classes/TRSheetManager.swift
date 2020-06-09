@@ -170,31 +170,30 @@ public class TRSheetManager {
     */
     public func generateSheet() -> Data? {
         
-        var dataStream = "<?xml version=\"1.0\"?>\n<?mso-application progid=\"Excel.Sheet\"?>\n<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"\n xmlns:o=\"urn:schemas-microsoft-com:office:office\"\nxmlns:x=\"urn:schemas-microsoft-com:office:excel\"\n xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\n xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n\n<DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">\n"
+        let sheetHandler: TRMetaFileHandler
         
         // only set author if available
         if let author = self.authorName {
-            dataStream = "\(dataStream)\t<Author>\(author)</Author>\n"
+            sheetHandler = TRMetaFileHandler(withAuthor: author)
+        } else {
+            sheetHandler = TRMetaFileHandler(withAuthor: "")
         }
         
-        // set created date
-        dataStream = "\(dataStream)\t<Created>\(Date())</Created>\n</DocumentProperties>\n"
-        
         // add styles formatting rules
-        dataStream.append(loadCustomStyles(sheets: self.sheetArray))
+        sheetHandler.addContent(content: loadCustomStyles(sheets: self.sheetArray))
 
         //write every sheet page
         for sheet in self.sheetArray {
 
-            dataStream.append("<Worksheet ss:Name=\"\(sheet.sheetname)\">\n")
-
+            sheetHandler.beginWorkSheet(name: sheet.sheetname)
+            
             //start the table
-            dataStream.append("<Table>\n")
+            sheetHandler.beginTable()
             
             //add column size if available
             if let sizeList = sheet.columnSizeList {
                 for size in sizeList {
-                    dataStream.append("\t<Column ss:AutoFitWidth=\"0\" ss:Width=\"\(size)\"/>\n")
+                    sheetHandler.appendColumn(autoFitWidth: 0, width: size)
                 }
             }
             
@@ -203,7 +202,7 @@ public class TRSheetManager {
                 for rowIndex in 0...sheet.array.count - 1 {
                     //for rowEntry in sheet.array {
                     let rowEntry = sheet.array[rowIndex]
-                    dataStream.append("\t<Row>\n")
+                    sheetHandler.beginRow()
                     
                     //every cell
                     for cellIndex in 0...rowEntry.count - 1 {
@@ -241,34 +240,37 @@ public class TRSheetManager {
                         }
                         
                         if type == .string && !isValidString {
-                            dataStream.append("\t\t<Cell />\n")
+                            sheetHandler.beginAndEndCell()
                         } else {
                             if let varArg = contentData as? CVarArg {
-                                let completeCellString = String(format: "\t\t<Cell%@><Data ss:Type=\"%@\">%@</Data></Cell>\n", cellConfiguration, type.rawValue, varArg)
-                                dataStream.append(completeCellString)
+                                sheetHandler.beginCell(configuration: cellConfiguration)
+                                sheetHandler.beginDataWithType(type: type.rawValue)
+                                sheetHandler.addContent(content: String(format: "%@", varArg))
+                                sheetHandler.endData()
+                                sheetHandler.endCell()
+                                
                             } else {
                                 // default closing
-                                dataStream.append("\t\t<Cell />\n")
+                                sheetHandler.beginAndEndCell()
                             }
                         }
                     }
-                    dataStream.append("\t</Row>\n")
+                    sheetHandler.endRow()
                 }
             }
 
             //end table
-            dataStream.append("</Table>\n")
+            sheetHandler.endTable()
             
             //if wsheet options are available add them
             if let options = self.workSheetOptions {
-                dataStream.append(self.parseWorkSheetOptions(options: options))
+                sheetHandler.addContent(content: self.parseWorkSheetOptions(options: options))
             }
-            
-            dataStream.append("</Worksheet>\n")
+            sheetHandler.endWorksheet()
         }
         // end tag
-        dataStream.append("</Workbook>")
-        return dataStream.data(using: .utf8)
+        sheetHandler.endWorkbook()
+        return sheetHandler.content.data(using: .utf8)
     }
     
     private func getStyleForDict(style: [String: Any]) -> String? {

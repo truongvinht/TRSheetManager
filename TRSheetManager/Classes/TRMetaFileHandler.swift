@@ -59,7 +59,7 @@ public class TRMetaFileHandler {
      - Parameters:
         - withString: string value
      */
-    public init(with author: String) {
+    public init(withAuthor author: String) {
         self.author = author
         
         // init
@@ -103,7 +103,7 @@ public class TRMetaFileHandler {
         self.content.append("<\(tag) \(config) />\n")
     }
     
-    public func resetContent(){
+    public func resetContent() {
         self.content = ""
     }
     
@@ -151,6 +151,10 @@ public class TRMetaFileHandler {
     
     public func beginData(configuration: String) {
         self.beginTag(tag: TRSheetConst.data, config: configuration)
+    }
+    
+    public func beginDataWithType(type: String) {
+        self.beginTag(tag: TRSheetConst.data, config: "ss:Type\"\(type)\"")
     }
     
     public func endData() {
